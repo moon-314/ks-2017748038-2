@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>2017748038, 문성민</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+</head>
+<body>
+
+
+<div class="container">
+    <div class="page-header">
+        <h1>Profile 등록</h1>
+    </div>
+    <br/>
+
+    <input id="profile_idx" type="hidden" th:value="${profile?.idx}"/>
+    <table class="table">
+        <tr>
+            <th style="padding:13px 0 0 15px;">SNS</th>
+            <td><input id="profile_network" type="text" class="col-md-1 form-control input-sm" th:value="${profile?.network}"/>
+            </td>
+        </tr>
+        <tr>
+            <th style="padding:13px 0 0 15px;">ID</th>
+            <td><input id="profile_username" type="text" class="col-md-1 form-control input-sm"
+                       th:value="${profile?.username}"/></td>
+        </tr>
+        <tr>
+            <th style="padding:13px 0 0 15px;">링크</th>
+            <td><input id="profile_url" type="text" class="col-md-1 form-control input-sm"
+                       th:value="${profile?.url}"/></td>
+        </tr>
+        <tr>
+            <th style="padding:13px 0 0 15px;">등록시간</th>
+            <td><input id="profile_createdAt" type="text" class="col-md-1 form-control input-sm"
+                       th:value="${profile?.createdAt}"/></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <div class="pull-left">
+        <a href="/" class="btn btn-default">목록으로</a>
+    </div>
+    <div class="pull-right">
+        <button th:if="!${profile?.idx}" type="button" class="btn btn-primary" id="insert">저장</button>
+        <button th:if="${profile?.idx}" type="button" class="btn btn-info" id="update">수정</button>
+        <button th:if="${profile?.idx}" type="button" class="btn btn-danger" id="delete">삭제</button>
+    </div>
+</div>
+
+<div th:fragment="footer">
+    <footer class="footer">
+        <div class="container">
+            <p>Copyright 2019, All Right Reserved. Designed by KS</p>
+        </div>
+    </footer>
+</div>
+
+<script src="/js/jquery.js"></script>
+<script th:if="!${profile?.idx}">
+    $('#insert').click(function () {
+        var jsonData = JSON.stringify({
+            network: $('#profile_network').val(),
+            username: $('#profile_username').val(),
+            url: $('#profile_url').val(),
+            createdAt: $('#profile_createdAt').val()
+        });
+        $.ajax({
+            url: "http://localhost:8080/profile/add",
+            type: "POST",
+            data: jsonData,
+            contentType: "application/json",
+            dataType: "json",
+            success: function () {
+                alert('저장 성공!');
+                location.href = '/';
+            },
+            error: function () {
+                alert('저장 실패!');
+            }
+        });
+    });
+</script>
+<script th:if="${profile?.idx}">
+    $('#update').click(function () {
+        var jsonData = JSON.stringify({
+            network: $('#profile_network').val(),
+            username: $('#profile_username').val(),
+            url: $('#profile_url').val(),
+            createdAt: $('#profile_createdAt').val()
+        });
+        $.ajax({
+            url: "http://localhost:8080/profile/" + $('#profile_idx').val(),
+            type: "PUT",
+            data: jsonData,
+            contentType: "application/json",
+            dataType: "json",
+            success: function () {
+                alert('수정 성공!');
+                location.href = '/';
+            },
+            error: function () {
+                alert('수정 실패!');
+            }
+        });
+    });
+    $('#delete').click(function () {
+        $.ajax({
+            url: "http://localhost:8080/profile/" + $('#profile_idx').val(),
+            type: "DELETE",
+            success: function () {
+                alert('삭제 성공!');
+                location.href = '/';
+            },
+            error: function () {
+                alert('삭제 실패!');
+            }
+        });
+    });
+</script>
+</body>
+</html>
